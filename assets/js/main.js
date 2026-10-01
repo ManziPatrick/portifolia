@@ -1,4 +1,3 @@
-
 (function() {
   "use strict";
 
@@ -43,6 +42,17 @@
     select('#navbar').classList.toggle('navbar-mobile')
     this.classList.toggle('bi-list')
     this.classList.toggle('bi-x')
+    this.setAttribute('aria-expanded', select('#navbar').classList.contains('navbar-mobile'))
+  })
+
+  /**
+   * Keyboard support for the mobile nav toggle
+   */
+  on('keydown', '.mobile-nav-toggle', function(e) {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+      e.preventDefault()
+      this.click()
+    }
   })
 
   /**
@@ -69,6 +79,7 @@
         let navbarToggle = select('.mobile-nav-toggle')
         navbarToggle.classList.toggle('bi-list')
         navbarToggle.classList.toggle('bi-x')
+        navbarToggle.setAttribute('aria-expanded', 'false')
       }
 
       if (this.hash == '#header') {
@@ -130,50 +141,35 @@
   });
 
   /**
-   * Skills animation
-   */
-  let skilsContent = select('.skills-content');
-  if (skilsContent) {
-    new Waypoint({
-      element: skilsContent,
-      offset: '80%',
-      handler: function(direction) {
-        let progress = select('.progress .progress-bar', true);
-        progress.forEach((el) => {
-          el.style.width = el.getAttribute('aria-valuenow') + '%'
-        });
-      }
-    })
-  }
-
-  /**
    * Testimonials slider
    */
-  new Swiper('.testimonials-slider', {
-    speed: 600,
-    loop: true,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false
-    },
-    slidesPerView: 'auto',
-    pagination: {
-      el: '.swiper-pagination',
-      type: 'bullets',
-      clickable: true
-    },
-    breakpoints: {
-      320: {
-        slidesPerView: 1,
-        spaceBetween: 20
+  if (select('.testimonials-slider')) {
+    new Swiper('.testimonials-slider', {
+      speed: 600,
+      loop: true,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false
       },
+      slidesPerView: 'auto',
+      pagination: {
+        el: '.swiper-pagination',
+        type: 'bullets',
+        clickable: true
+      },
+      breakpoints: {
+        320: {
+          slidesPerView: 1,
+          spaceBetween: 20
+        },
 
-      1200: {
-        slidesPerView: 3,
-        spaceBetween: 20
+        1200: {
+          slidesPerView: 3,
+          spaceBetween: 20
+        }
       }
-    }
-  });
+    });
+  }
 
   /**
    * Porfolio isotope and filter
@@ -204,14 +200,14 @@
   });
 
   /**
-   * Initiate portfolio lightbox 
+   * Initiate portfolio lightbox
    */
   const portfolioLightbox = GLightbox({
     selector: '.portfolio-lightbox'
   });
 
   /**
-   * Initiate portfolio details lightbox 
+   * Initiate portfolio details lightbox
    */
   const portfolioDetailsLightbox = GLightbox({
     selector: '.portfolio-details-lightbox',
@@ -222,22 +218,77 @@
   /**
    * Portfolio details slider
    */
-  new Swiper('.portfolio-details-slider', {
-    speed: 400,
-    loop: true,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false
-    },
-    pagination: {
-      el: '.swiper-pagination',
-      type: 'bullets',
-      clickable: true
-    }
-  });
+  if (select('.portfolio-details-slider')) {
+    new Swiper('.portfolio-details-slider', {
+      speed: 400,
+      loop: true,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        type: 'bullets',
+        clickable: true
+      }
+    });
+  }
 
   /**
-   * Initiate Pure Counter 
+   * Reveal-on-scroll animations (Intersection Observer, plays once per element)
+   */
+  let revealEls = select('.reveal', true);
+  if (revealEls.length) {
+    // Stagger delays for elements that share a parent
+    let groups = new Map();
+    revealEls.forEach((el) => {
+      let parent = el.parentElement;
+      let index = groups.get(parent) || 0;
+      el.style.setProperty('--d', (index * 0.09) + 's');
+      groups.set(parent, index + 1);
+    });
+
+    if ('IntersectionObserver' in window) {
+      let observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px'
+      });
+      revealEls.forEach((el) => observer.observe(el));
+    } else {
+      revealEls.forEach((el) => el.classList.add('is-visible'));
+    }
+  }
+
+  /**
+   * Resume - show/hide additional Professional Experience entries
+   */
+  let expToggle = document.getElementById('experience-toggle');
+  let expMore = document.getElementById('experience-more');
+  if (expToggle && expMore) {
+    let expSign = expToggle.querySelector('.resume-toggle-sign');
+    let expLabel = expToggle.querySelector('.resume-toggle-label');
+    expToggle.addEventListener('click', () => {
+      let isOpen = expToggle.getAttribute('aria-expanded') === 'true';
+      if (isOpen) {
+        expMore.setAttribute('hidden', '');
+      } else {
+        expMore.removeAttribute('hidden');
+      }
+      expToggle.setAttribute('aria-expanded', String(!isOpen));
+      if (expSign) expSign.textContent = isOpen ? '+' : '\u2212';
+      if (expLabel) expLabel.textContent = isOpen ? 'Show more experience' : 'Show less experience';
+    });
+  }
+
+  /**
+   * Initiate Pure Counter
    */
   new PureCounter();
 

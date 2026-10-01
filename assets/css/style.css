@@ -167,6 +167,11 @@ h6 {
   font-size: 36px;
 }
 
+/* Keep the sticky header bar compact: only the short form of the name */
+#header.header-top h1 .name-extra {
+  display: none;
+}
+
 #header.header-top img {
   max-height: 60px;
   margin-right: 20px !important;
@@ -439,6 +444,13 @@ section .container {
   margin-bottom: 0;
 }
 
+/* Let long unbroken values (e.g. email addresses) wrap on very small screens
+   instead of overflowing the column */
+.about-me .content ul li span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 /*--------------------------------------------------------------
 # Counts
 --------------------------------------------------------------*/
@@ -509,40 +521,6 @@ section .container {
 width: 100%;
 height: 100;
 }
-.skills-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  height: 80vh;
-}
-
-/* .icon-circle {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-} */
-
-.icon-circle img {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  transition: transform 0.3s ease;
-}
-
-.icon-circle img:nth-child(1) { transform: rotate(0deg) translate(200px) rotate(0deg); }
-.icon-circle img:nth-child(2) { transform: rotate(40deg) translate(200px) rotate(-40deg); }
-.icon-circle img:nth-child(3) { transform: rotate(80deg) translate(200px) rotate(-80deg); }
-.icon-circle img:nth-child(4) { transform: rotate(120deg) translate(200px) rotate(-120deg); }
-.icon-circle img:nth-child(5) { transform: rotate(160deg) translate(200px) rotate(-160deg); }
-.icon-circle img:nth-child(6) { transform: rotate(200deg) translate(200px) rotate(-200deg); }
-.icon-circle img:nth-child(7) { transform: rotate(240deg) translate(200px) rotate(-240deg); }
-.icon-circle img:nth-child(8) { transform: rotate(280deg) translate(200px) rotate(-280deg); }
-.icon-circle img:nth-child(9) { transform: rotate(320deg) translate(200px) rotate(-320deg); }
-
-
 .skills .progress-bar-wrap {
   background: rgba(255, 255, 255, 0.2);
 }
@@ -1224,4 +1202,367 @@ height: 100;
 
 .credits a:hover {
   color: #fff;
+}
+
+
+/*--------------------------------------------------------------
+# Header CTA buttons
+--------------------------------------------------------------*/
+/* Fit the extended navigation between 992px and 1199px without overflow */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .navbar li+li {
+    margin-left: 16px;
+  }
+
+  .navbar a,
+  .navbar a:focus {
+    font-size: 14px;
+  }
+
+  #header h1 {
+    font-size: 40px;
+  }
+}
+
+/*--------------------------------------------------------------
+# Contact info links
+--------------------------------------------------------------*/
+.contact .info-box p a {
+  color: #fff;
+  transition: 0.3s;
+}
+
+.contact .info-box p a:hover {
+  color: #18d26e;
+}
+
+/*--------------------------------------------------------------
+# Skills section - categories, cards and background visual
+--------------------------------------------------------------*/
+.skills-section .container {
+  position: relative;
+}
+
+.skills-section .container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.skills-section .container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(24, 210, 110, 0.28) 1.5px, transparent 2px);
+  background-size: 96px 96px;
+  animation: skills-dots-drift 24s linear infinite;
+}
+
+.skills-section .container>* {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes skills-dots-drift {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 96px 96px;
+  }
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 24px;
+}
+
+.skill-category {
+  padding: 22px 22px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.skill-category:hover {
+  transform: translateY(-6px);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(24, 210, 110, 0.45);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+
+.skill-category-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.skill-category-icon {
+  display: flex;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(24, 210, 110, 0.35);
+  border-radius: 8px;
+  background: rgba(24, 210, 110, 0.12);
+  color: #18d26e;
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+.skill-category:hover .skill-category-icon {
+  transform: translateY(-2px) scale(1.06);
+}
+
+.skill-category-head h3 {
+  margin: 0;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.skill-tags li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  line-height: 1.3;
+  transition: all 0.25s ease;
+}
+
+.skill-tags li img {
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+}
+
+.skill-tags li:hover {
+  border-color: rgba(24, 210, 110, 0.6);
+  background: rgba(24, 210, 110, 0.12);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.skill-tags li:hover img {
+  transform: scale(1.15);
+}
+
+.skill-subhead {
+  margin: 16px 0 8px;
+  color: #aaaaaa;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.skill-note {
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12.5px;
+  font-style: italic;
+}
+
+@media (max-width: 576px) {
+  .skill-category {
+    padding: 18px 16px;
+  }
+
+  .skills-grid {
+    gap: 16px;
+  }
+}
+
+/*--------------------------------------------------------------
+# Reveal-on-scroll animations
+--------------------------------------------------------------*/
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: var(--d, 0s);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/*--------------------------------------------------------------
+# Resume - Download CV button
+--------------------------------------------------------------*/
+.cv-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 15px 0 5px;
+  padding: 10px 26px;
+  border-radius: 4px;
+  background: #18d26e;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.cv-button:hover {
+  background: #15bb62;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/*--------------------------------------------------------------
+# Resume - expandable extra experience entries
+--------------------------------------------------------------*/
+.resume-more[hidden] {
+  display: none;
+}
+
+.resume-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 10px 22px;
+  border: 1px solid rgba(24, 210, 110, 0.55);
+  border-radius: 4px;
+  background: rgba(24, 210, 110, 0.08);
+  color: #18d26e;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.resume-toggle:hover {
+  background: #18d26e;
+  color: #fff;
+}
+
+.resume-toggle-sign {
+  display: inline-block;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/*--------------------------------------------------------------
+# Portfolio - pending screenshot placeholder
+--------------------------------------------------------------*/
+.portfolio .portfolio-thumb {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  aspect-ratio: 4 / 3;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+}
+
+.portfolio .portfolio-thumb i {
+  font-size: 42px;
+  color: rgba(24, 210, 110, 0.7);
+}
+
+.portfolio .portfolio-thumb span {
+  font-size: 13px;
+}
+
+.portfolio-details .portfolio-thumb--tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  aspect-ratio: 16 / 9;
+  padding: 30px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+}
+
+.portfolio-details .portfolio-thumb--tile i {
+  font-size: 56px;
+  color: rgba(24, 210, 110, 0.7);
+}
+
+/*--------------------------------------------------------------
+# Accessibility - focus states and reduced motion
+--------------------------------------------------------------*/
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #18d26e;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .skills-section .container::after {
+    animation: none;
+  }
+
+  .skill-category,
+  .skill-category-icon,
+  .skill-tags li,
+  .skill-tags li img,
+  .cv-button,
+  .resume-toggle {
+    transition: none !important;
+  }
+
+  .skill-category:hover,
+  .skill-tags li:hover,
+  .cv-button:hover,
+  .resume-toggle:hover,
+  .skill-category:hover .skill-category-icon,
+  .skill-tags li:hover img {
+    transform: none !important;
+  }
 }
